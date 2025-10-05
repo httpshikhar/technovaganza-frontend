@@ -176,7 +176,9 @@ const EventList = () => {
                   </div>
                 </div>
                 
-                <p className="text-gray-300 text-sm mb-4 line-clamp-2">{event.description}</p>
+                <p className="text-gray-600 dark:text-gray-400 text-sm">
+                  {event.type} • {event.totalParticipants || 0} participants
+                </p>
                 
                 <div className="space-y-3 mb-4">
                   <div className="flex justify-between text-sm">
