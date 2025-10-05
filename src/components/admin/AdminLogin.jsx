@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { adminLogin } from '../../utils/api'; // Import from your api.js
+import { adminLogin } from '../../services/api'; // Import from your api.js
 
 const AdminLogin = ({ onAdminLogin }) => {
   const [formData, setFormData] = useState({
