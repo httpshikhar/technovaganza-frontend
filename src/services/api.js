@@ -4,14 +4,49 @@ const API = axios.create({
   baseURL: 'https://technovaganza-backend.onrender.com/api',
 });
 
-// Add token to requests - FIXED
+// Add token to requests - FIXED FOR BOTH USER AND ADMIN
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('adminToken'); // ✅ Changed to adminToken
+  // Try both user token and admin token
+  const userToken = localStorage.getItem('token');
+  const adminToken = localStorage.getItem('adminToken');
+  const token = userToken || adminToken;
+  
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+    console.log('🔐 Token added to request:', config.url, token.substring(0, 20) + '...');
+  } else {
+    console.log('❌ No token found for request:', config.url);
   }
   return config;
 });
+
+// Add response interceptor for debugging
+API.interceptors.response.use(
+  (response) => {
+    console.log('✅ API Success:', response.config.url, response.status);
+    return response;
+  },
+  (error) => {
+    console.error('❌ API Error:', error.config?.url, error.response?.status, error.message);
+    
+    // Auto-logout on 401 errors
+    if (error.response?.status === 401) {
+      console.log('🔄 Auto-logout due to 401 error');
+      // Clear both tokens to be safe
+      localStorage.removeItem('token');
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('user');
+      localStorage.removeItem('adminUser');
+      
+      // Redirect to login page if not already there
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
+      }
+    }
+    
+    return Promise.reject(error);
+  }
+);
 
 // Auth APIs
 export const registerUser = (userData) => API.post('/auth/register', userData);
