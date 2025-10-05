@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { createEvent } from '../../services/api'; // Import from api.js
 
 const EventForm = () => {
   const [formData, setFormData] = useState({
@@ -51,28 +51,19 @@ const EventForm = () => {
     }
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await axios.post(
-        'http://localhost:5000/api/events',
-        {
-          name: formData.name,
-          description: formData.description,
-          type: formData.type,
-          date: formData.date,
-          time: formData.time,
-          venue: formData.venue,
-          amount: parseFloat(formData.amount) || 0,
-          maxParticipants: parseInt(formData.maxParticipants),
-          maxTeamSize: formData.type === 'team' ? parseInt(formData.maxTeamSize) : 1,
-          minTeamSize: formData.type === 'team' ? parseInt(formData.minTeamSize) : 1
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          }
-        }
-      );
+      // ✅ Use api.js function instead of direct axios call
+      const response = await createEvent({
+        name: formData.name,
+        description: formData.description,
+        type: formData.type,
+        date: formData.date,
+        time: formData.time,
+        venue: formData.venue,
+        amount: parseFloat(formData.amount) || 0,
+        maxParticipants: parseInt(formData.maxParticipants),
+        maxTeamSize: formData.type === 'team' ? parseInt(formData.maxTeamSize) : 1,
+        minTeamSize: formData.type === 'team' ? parseInt(formData.minTeamSize) : 1
+      });
       
       if (response.data.success) {
         setMessage('Event created successfully!');

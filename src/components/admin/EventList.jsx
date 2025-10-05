@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { getAdminEvents, deleteEvent } from '../../services/api'; // Import from api.js
 
 const EventList = () => {
   const [events, setEvents] = useState([]);
@@ -9,18 +9,8 @@ const EventList = () => {
 
   const fetchEvents = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
-      if (!token) {
-        setMessage('Admin not authenticated. Please login again.');
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.get('http://localhost:5000/api/admin/events', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
+      // ✅ Use api.js function instead of direct axios call
+      const response = await getAdminEvents();
       
       if (response.data.success) {
         setEvents(response.data.events);
@@ -48,15 +38,8 @@ const EventList = () => {
   const handleDelete = async (eventId, eventName) => {
     if (window.confirm(`Are you sure you want to delete "${eventName}"? This action cannot be undone.`)) {
       try {
-        const token = localStorage.getItem('adminToken');
-        const response = await axios.delete(
-          `http://localhost:5000/api/events/${eventId}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${token}`
-            }
-          }
-        );
+        // ✅ Use api.js function instead of direct axios call
+        const response = await deleteEvent(eventId);
         
         if (response.data.success) {
           setMessage('Event deleted successfully!');

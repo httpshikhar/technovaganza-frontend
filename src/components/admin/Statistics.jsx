@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { COLLEGES } from '../../utils/constants';
+import { getStatistics, getAdminEvents, exportEventParticipants, exportAllParticipants, exportByCollege } from '../../services/api'; // Import from api.js
 
 const Statistics = () => {
   const [stats, setStats] = useState(null);
@@ -13,7 +12,6 @@ const Statistics = () => {
   const [selectedCollege, setSelectedCollege] = useState('all');
 
   const colleges = COLLEGES;
-  const API_BASE = 'http://localhost:5000';
 
   useEffect(() => {
     fetchStats();
@@ -23,10 +21,8 @@ const Statistics = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('adminToken');
-      const response = await axios.get(`${API_BASE}/api/admin/statistics?range=${timeRange}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // ✅ Use api.js function instead of direct axios call
+      const response = await getStatistics();
       setStats(response.data.statistics);
     } catch (error) {
       console.error('Error fetching statistics:', error);
@@ -37,25 +33,11 @@ const Statistics = () => {
 
   const fetchEvents = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await axios.get(`${API_BASE}/api/admin/events`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      // ✅ Use api.js function instead of direct axios call
+      const response = await getAdminEvents();
       setEvents(response.data.events);
     } catch (error) {
       console.error('Error fetching events:', error);
-    }
-  };
-
-  const fetchEventStats = async (eventId) => {
-    try {
-      const token = localStorage.getItem('adminToken');
-      const response = await axios.get(`${API_BASE}/api/admin/events/${eventId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setSelectedEvent(response.data);
-    } catch (error) {
-      console.error('Error fetching event statistics:', error);
     }
   };
 
@@ -67,38 +49,8 @@ const Statistics = () => {
 
     try {
       setExportLoading(true);
-      const token = localStorage.getItem('adminToken');
-      
-      const response = await axios.get(
-        `${API_BASE}/api/admin/export/event/${eventId}${selectedCollege !== 'all' ? `?college=${selectedCollege}` : ''}`, 
-        {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          responseType: 'blob'
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      
-      const contentDisposition = response.headers['content-disposition'];
-      let filename = 'participants.csv';
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-        if (filenameMatch && filenameMatch.length === 2) {
-          filename = filenameMatch[1];
-        }
-      }
-      
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-
+      // ✅ Use api.js function instead of direct axios call
+      await exportEventParticipants(eventId, selectedCollege !== 'all' ? selectedCollege : '');
     } catch (error) {
       console.error('Export error:', error);
       alert('Failed to export participants. Please try again.');
@@ -110,38 +62,8 @@ const Statistics = () => {
   const exportAllParticipants = async () => {
     try {
       setExportLoading(true);
-      const token = localStorage.getItem('adminToken');
-      
-      const response = await axios.get(
-        `${API_BASE}/api/admin/export/all-participants${selectedCollege !== 'all' ? `?college=${selectedCollege}` : ''}`, 
-        {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          responseType: 'blob'
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      
-      const contentDisposition = response.headers['content-disposition'];
-      let filename = 'all_participants.csv';
-      if (contentDisposition) {
-        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
-        if (filenameMatch && filenameMatch.length === 2) {
-          filename = filenameMatch[1];
-        }
-      }
-      
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-
+      // ✅ Use api.js function instead of direct axios call
+      await exportAllParticipants(selectedCollege !== 'all' ? selectedCollege : '');
     } catch (error) {
       console.error('Export all error:', error);
       alert('Failed to export all participants. Please try again.');
@@ -158,30 +80,8 @@ const Statistics = () => {
 
     try {
       setExportLoading(true);
-      const token = localStorage.getItem('adminToken');
-      
-      const response = await axios.get(
-        `${API_BASE}/api/admin/export/college/${selectedCollege}`, 
-        {
-          headers: { 
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
-          },
-          responseType: 'blob'
-        }
-      );
-
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-      const link = document.createElement('a');
-      link.href = url;
-      
-      const filename = `${selectedCollege.replace(/\s+/g, '_')}_participants.csv`;
-      link.setAttribute('download', filename);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-
+      // ✅ Use api.js function instead of direct axios call
+      await exportByCollege(selectedCollege);
     } catch (error) {
       console.error('Export college error:', error);
       alert('Failed to export college data. Please try again.');
