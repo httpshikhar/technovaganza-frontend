@@ -4,12 +4,21 @@ const API = axios.create({
   baseURL: 'https://technovaganza-backend.onrender.com/api',
 });
 
-// Add token to requests - FIXED FOR BOTH USER AND ADMIN
+// Add token to requests - FIXED: Prioritize adminToken for admin routes
 API.interceptors.request.use((config) => {
-  // Try both user token and admin token
-  const userToken = localStorage.getItem('token');
-  const adminToken = localStorage.getItem('adminToken');
-  const token = userToken || adminToken;
+  // Check if it's an admin route
+  const isAdminRoute = config.url.includes('/admin/');
+  
+  let token;
+  if (isAdminRoute) {
+    // For admin routes, use adminToken first, then fallback to token
+    token = localStorage.getItem('adminToken') || localStorage.getItem('token');
+    console.log('🔐 Admin route detected, using token:', token ? 'adminToken' : 'token');
+  } else {
+    // For user routes, use token first, then fallback to adminToken
+    token = localStorage.getItem('token') || localStorage.getItem('adminToken');
+    console.log('👤 User route detected, using token:', token ? 'user token' : 'adminToken');
+  }
   
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -29,9 +38,9 @@ API.interceptors.response.use(
   (error) => {
     console.error('❌ API Error:', error.config?.url, error.response?.status, error.message);
     
-    // Auto-logout on 401 errors
-    if (error.response?.status === 401) {
-      console.log('🔄 Auto-logout due to 401 error');
+    // Auto-logout on 401/403 errors
+    if (error.response?.status === 401 || error.response?.status === 403) {
+      console.log('🔄 Auto-logout due to auth error');
       // Clear both tokens to be safe
       localStorage.removeItem('token');
       localStorage.removeItem('adminToken');
