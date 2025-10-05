@@ -4,9 +4,9 @@ const API = axios.create({
   baseURL: 'https://technovaganza-backend.onrender.com/api',
 });
 
-// Add token to requests
+// Add token to requests - FIXED
 API.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem('adminToken'); // ✅ Changed to adminToken
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -18,7 +18,7 @@ export const registerUser = (userData) => API.post('/auth/register', userData);
 export const loginUser = (userData) => API.post('/auth/login', userData);
 
 // Admin Auth APIs
-export const adminLogin = (adminData) => API.post('/admin/login', adminData); // ✅ ADDED THIS LINE
+export const adminLogin = (adminData) => API.post('/admin/login', adminData);
 
 // User APIs
 export const getUserDashboard = () => API.get('/users/dashboard');
