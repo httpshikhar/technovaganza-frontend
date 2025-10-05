@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { adminLogin } from '../utils/api'; // Import from your api.js
 
 const AdminLogin = ({ onAdminLogin }) => {
   const [formData, setFormData] = useState({
@@ -22,10 +22,8 @@ const AdminLogin = ({ onAdminLogin }) => {
     setMessage('');
 
     try {
-      const response = await axios.post(
-        'http://localhost:5000/api/admin/login',
-        formData
-      );
+      // Use the imported adminLogin function from api.js
+      const response = await adminLogin(formData);
       
       if (response.data.success) {
         localStorage.setItem('adminToken', response.data.token);

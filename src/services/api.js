@@ -17,6 +17,9 @@ API.interceptors.request.use((config) => {
 export const registerUser = (userData) => API.post('/auth/register', userData);
 export const loginUser = (userData) => API.post('/auth/login', userData);
 
+// Admin Auth APIs
+export const adminLogin = (adminData) => API.post('/admin/login', adminData); // ✅ ADDED THIS LINE
+
 // User APIs
 export const getUserDashboard = () => API.get('/users/dashboard');
 export const registerForSoloEvent = (eventData) => API.post('/users/register-solo', eventData);
