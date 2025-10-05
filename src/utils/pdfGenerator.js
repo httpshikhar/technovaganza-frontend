@@ -267,7 +267,35 @@ export const generateParticipationPDF = async (userData, registrations, events, 
   pdf.text('Please submit the registration fees at the Technovaganza Registration Counter', pageWidth / 2, paymentY + 34, { align: 'center' });
   pdf.text('Counter Location: Main Registration Desk in SRMS CET & R', pageWidth / 2, paymentY + 40, { align: 'center' });
   pdf.text('Timing: 8:00 AM - 9:30 AM (sharp)', pageWidth / 2, paymentY + 46, { align: 'center' });
+  // AUTHORISED SIGNATORY SECTION - ADD THIS NEW SECTION
+  const signatoryY = pageHeight - 15;
+  
+  // Bar line above signatory
+  pdf.setDrawColor(0, 0, 0); // Black color for the bar line
+  pdf.setLineWidth(0.5);
+  pdf.line(100, signatoryY - 25, pageWidth - 100, signatoryY - 25);
+  
+  // Authorised Signatory text
+  pdf.setFontSize(10);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setTextColor(0, 0, 0); // Black color
+  pdf.text('Authorised Signatory', pageWidth / 2, signatoryY - 15, { align: 'center' });
 
+  // Footer - adjust position to be above signatory section
+  const footerY = signatoryY - 40;
+  pdf.setDrawColor(220, 53, 69);
+  pdf.setLineWidth(0.5);
+  pdf.line(25, footerY, pageWidth - 25, footerY);
+  
+  pdf.setFontSize(8);
+  pdf.setTextColor(102, 102, 102);
+  pdf.setFont('helvetica', 'normal');
+  pdf.text('Generated on: ' + new Date().toLocaleDateString('en-IN'), pageWidth / 2, footerY + 5, { align: 'center' });
+
+  // Save the PDF
+  const fileName = `Technovaganza_${userData.pid}_${new Date().getTime()}.pdf`;
+  pdf.save(fileName);
+  };
   // Footer
   const footerY = pageHeight - 15;
   pdf.setDrawColor(220, 53, 69);
@@ -282,7 +310,6 @@ export const generateParticipationPDF = async (userData, registrations, events, 
   // Save the PDF
   const fileName = `Technovaganza_${userData.pid}_${new Date().getTime()}.pdf`;
   pdf.save(fileName);
-};
 
 // Export the calculateAmount function for use elsewhere if needed
 export { calculateAmount };
