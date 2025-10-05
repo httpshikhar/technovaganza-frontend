@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getStatistics, getAdminEvents, exportEventParticipants, exportAllParticipants, exportByCollege } from '../../services/api'; // Import from api.js
+import { getStatistics, getAdminEvents, exportEventParticipants, exportAllParticipants, exportByCollege } from '../../services/api';
+import { COLLEGES } from '../../utils/constants';
 
 const Statistics = () => {
   const [stats, setStats] = useState(null);
@@ -21,7 +22,6 @@ const Statistics = () => {
   const fetchStats = async () => {
     try {
       setLoading(true);
-      // ✅ Use api.js function instead of direct axios call
       const response = await getStatistics();
       setStats(response.data.statistics);
     } catch (error) {
@@ -33,7 +33,6 @@ const Statistics = () => {
 
   const fetchEvents = async () => {
     try {
-      // ✅ Use api.js function instead of direct axios call
       const response = await getAdminEvents();
       setEvents(response.data.events);
     } catch (error) {
@@ -41,7 +40,19 @@ const Statistics = () => {
     }
   };
 
-  const exportEventParticipants = async (eventId = selectedEventId) => {
+  const fetchEventStats = async (eventId) => {
+    try {
+      // Note: You might need to add this function to your api.js
+      // For now, we'll use the existing getAdminEvents and find the event
+      const response = await getAdminEvents();
+      const event = response.data.events.find(e => e._id === eventId);
+      setSelectedEvent({ event });
+    } catch (error) {
+      console.error('Error fetching event statistics:', error);
+    }
+  };
+
+  const handleExportEventParticipants = async (eventId = selectedEventId) => {
     if (!eventId) {
       alert('Please select an event first');
       return;
@@ -49,8 +60,30 @@ const Statistics = () => {
 
     try {
       setExportLoading(true);
-      // ✅ Use api.js function instead of direct axios call
-      await exportEventParticipants(eventId, selectedCollege !== 'all' ? selectedCollege : '');
+      
+      // Use the api.js export function
+      const response = await exportEventParticipants(eventId, selectedCollege !== 'all' ? selectedCollege : '');
+      
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = 'participants.csv';
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (filenameMatch && filenameMatch.length === 2) {
+          filename = filenameMatch[1];
+        }
+      }
+      
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
     } catch (error) {
       console.error('Export error:', error);
       alert('Failed to export participants. Please try again.');
@@ -59,11 +92,31 @@ const Statistics = () => {
     }
   };
 
-  const exportAllParticipants = async () => {
+  const handleExportAllParticipants = async () => {
     try {
       setExportLoading(true);
-      // ✅ Use api.js function instead of direct axios call
-      await exportAllParticipants(selectedCollege !== 'all' ? selectedCollege : '');
+      
+      const response = await exportAllParticipants(selectedCollege !== 'all' ? selectedCollege : '');
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      const contentDisposition = response.headers['content-disposition'];
+      let filename = 'all_participants.csv';
+      if (contentDisposition) {
+        const filenameMatch = contentDisposition.match(/filename="(.+)"/);
+        if (filenameMatch && filenameMatch.length === 2) {
+          filename = filenameMatch[1];
+        }
+      }
+      
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
     } catch (error) {
       console.error('Export all error:', error);
       alert('Failed to export all participants. Please try again.');
@@ -72,7 +125,7 @@ const Statistics = () => {
     }
   };
 
-  const exportByCollege = async () => {
+  const handleExportByCollege = async () => {
     if (selectedCollege === 'all') {
       alert('Please select a specific college to export');
       return;
@@ -80,8 +133,20 @@ const Statistics = () => {
 
     try {
       setExportLoading(true);
-      // ✅ Use api.js function instead of direct axios call
-      await exportByCollege(selectedCollege);
+      
+      const response = await exportByCollege(selectedCollege);
+      
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      
+      const filename = `${selectedCollege.replace(/\s+/g, '_')}_participants.csv`;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+
     } catch (error) {
       console.error('Export college error:', error);
       alert('Failed to export college data. Please try again.');
@@ -92,7 +157,7 @@ const Statistics = () => {
 
   const quickExport = (eventId) => {
     setSelectedEventId(eventId);
-    setTimeout(() => exportEventParticipants(eventId), 100);
+    setTimeout(() => handleExportEventParticipants(eventId), 100);
   };
 
   if (loading) {
@@ -191,7 +256,7 @@ const Statistics = () => {
         {/* Separate Export Buttons */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
           <button 
-            onClick={() => exportEventParticipants()} 
+            onClick={() => handleExportEventParticipants()} 
             disabled={!selectedEventId || exportLoading}
             className="bg-primary hover:bg-primary/90 text-white py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
@@ -204,7 +269,7 @@ const Statistics = () => {
           </button>
           
           <button 
-            onClick={exportByCollege}
+            onClick={handleExportByCollege}
             disabled={exportLoading || selectedCollege === 'all'}
             className="bg-purple-500 hover:bg-purple-600 text-white py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
@@ -217,7 +282,7 @@ const Statistics = () => {
           </button>
           
           <button 
-            onClick={exportAllParticipants}
+            onClick={handleExportAllParticipants}
             disabled={exportLoading}
             className="bg-green-500 hover:bg-green-600 text-white py-3 px-4 rounded-lg transition-all duration-300 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
           >
