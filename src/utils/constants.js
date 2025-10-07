@@ -17,17 +17,23 @@ export const BRANCHES = [
   'Civil Engineering',
   'Chemical Engineering',
   'Biotechnology',
+  'CSE Cyber Security',
+  'CSE AI/ML',
+  'CSE Data Science',
+  'BCA',
   'MCA',
   'MBA',
   'BBA',
   'B.Com',
   'B.Sc',
+  'BHMCT',
   'MBBS',
   'BDS',
   'B.Pharma',
   'D.Pharma',
   'B.Sc Nursing',
-  'GNM Nursing',
+  'GNM',
+  'ANM',
   'Other'
 ];
 
@@ -46,5 +52,11 @@ export const COLLEGES = [
   'SRMS IMS',
   'SRMS Nursing',
   'SRMS IPS',
-  'KCMT'
+  'KCMT',
+  'RBMI',
+  'Invertis University',
+  'MJPRU',
+  'Future University',
+  'SSVGI',
+  'Rajshree Institute'
 ];

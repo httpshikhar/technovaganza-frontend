@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { createTeam, validateTeamMember } from '../../services/api';
+import { formatTeamSize } from '../../utils/helpers';
 
 const TeamEvents = ({ events, user, onRegistration }) => {
   const teamEvents = events.filter(event => event.type === 'team');
@@ -185,9 +186,12 @@ const TeamEvents = ({ events, user, onRegistration }) => {
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-6">
               <h4 className="text-blue-300 font-semibold mb-3">🏆 Team Requirements</h4>
               <div className="space-y-2 text-sm">
-                <p className="text-blue-200">Minimum: <strong>{selectedEvent.minTeamSize}</strong> members</p>
-                <p className="text-blue-200">Maximum: <strong>{selectedEvent.maxTeamSize}</strong> members</p>
-                <p className="text-blue-200">Including you, need <strong>{selectedEvent.minTeamSize - 1}</strong> to <strong>{selectedEvent.maxTeamSize - 1}</strong> more members</p>
+                <p className="text-blue-200">
+                  <strong>{formatTeamSize(selectedEvent.minTeamSize, selectedEvent.maxTeamSize)}</strong>
+                </p>
+                <p className="text-blue-200">
+                  Including you, need <strong>{selectedEvent.minTeamSize - 1}</strong> to <strong>{selectedEvent.maxTeamSize - 1}</strong> more members
+                </p>
               </div>
             </div>
 
@@ -333,7 +337,7 @@ const TeamEvents = ({ events, user, onRegistration }) => {
               <div className="flex justify-between text-sm">
                 <span className="text-gray-400">Team Size:</span>
                 <span className="text-white">
-                  {event.minTeamSize}-{event.maxTeamSize} members
+                  {formatTeamSize(event.minTeamSize, event.maxTeamSize)}
                 </span>
               </div>
               <div className="flex justify-between text-sm">

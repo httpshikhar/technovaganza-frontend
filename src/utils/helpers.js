@@ -25,3 +25,10 @@ export const downloadPDF = (pdfData, filename) => {
   link.click();
   window.URL.revokeObjectURL(url);
 };
+
+export const formatTeamSize = (min, max) => {
+  if (min === max) {
+    return `Team Size: ${min}`;
+  }
+  return `Team Size: ${min} to ${max}`;
+};
