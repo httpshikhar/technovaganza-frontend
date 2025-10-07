@@ -12,16 +12,18 @@ const Auth = () => {
 
 
         {/* Top Header with Logo + College Name */}
-        <header className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-white/20 mb-12">
-          <img
-            src="https://tse1.mm.bing.net/th/id/OIP.M1q0n44vny5M4OUvsYjA0AAAAA?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
-            alt="SRMS College Logo"
-            className="w-14 h-14 rounded-full border-2 border-white shadow-md"
-          />
-          <h2 className="text-1xl md:text-2xl font-bold text-white drop-shadow-md">
-            SRMS College of Engineering, Technology & Research
+        <header className="absolute top-6 left-1/2 -translate-x-1/2 flex items-center gap-4 bg-white/10 backdrop-blur-md px-6 py-3 rounded-full shadow-lg border border-white/20 max-w-[90vw]">
+        <img
+          src="https://tse1.mm.bing.net/th/id/OIP.M1q0n44vny5M4OUvsYjA0AAAAA?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3"
+          alt="SRMS College Logo"
+          className="w-14 h-14 rounded-full border-2 border-white shadow-md flex-shrink-0"
+        />
+        <div className="flex flex-col items-center min-w-0">
+          <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-white glow-text whitespace-nowrap overflow-hidden text-ellipsis">
+            SRMS College of Engineering, Technology & Research, Bareilly
           </h2>
-        </header>
+        </div>
+      </header>
 
         <div className="mt-12 w-full max-w-md p-8 space-y-8 bg-background-dark/50 rounded-xl shadow-2xl shadow-primary/20 border border-white/10">
           {/* Header */}
