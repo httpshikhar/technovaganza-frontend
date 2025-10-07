@@ -4,6 +4,7 @@ import "react-responsive-carousel/lib/styles/carousel.min.css";
 
 const BackgroundCarousel = () => {
   const images = [
+    "img0.jpg",
     "img1.jpeg",
     "img2.jpeg",
     "img3.jpeg",
