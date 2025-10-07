@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { formatDate } from '../../utils/helpers.js';
-import { generateParticipationPDF, generateSimpleReceipt } from '../../utils/pdfGenerator.js';
+import { generateParticipationPDF } from '../../utils/pdfGenerator.js';
 
 const Profile = ({ user, events, onRefresh }) => {
   const [registeredEvents, setRegisteredEvents] = useState([]);
@@ -20,7 +20,7 @@ const Profile = ({ user, events, onRefresh }) => {
     setDownloading(index);
     
     try {
-      const event = getEventDetails(registration.eventId?._id || registration.eventId);
+      getEventDetails(registration.eventId?._id || registration.eventId);
       await generateParticipationPDF(user, [registration], events);
     } catch (error) {
       console.error('PDF generation error:', error);

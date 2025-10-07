@@ -5,8 +5,9 @@ import Register from '../components/auth/Register.jsx';
 const Home = () => {
   const [isLogin, setIsLogin] = useState(true);
 
-  return (
+  return (<>
     <div className="relative flex h-screen w-full flex-col items-center justify-center overflow-hidden">
+     
       {/* Background Video */}
       <video 
         autoPlay 
@@ -20,6 +21,7 @@ const Home = () => {
           type="video/mp4" 
         />
       </video>
+      <div  className='absolute inset-0 flex items-center justify-center text-white text-4xl font-bold'>Hello world</div>
       
       {/* Main Content */}
       <div className="relative z-10 flex w-full max-w-6xl">
@@ -48,6 +50,7 @@ const Home = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
