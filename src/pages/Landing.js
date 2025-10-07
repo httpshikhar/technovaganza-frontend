@@ -36,7 +36,7 @@ const Landing = () => {
         
         {/* Annual Technical Fest with glowing effect */}
         <p className="mt-4 text-2xl md:text-3xl font-bold glow-text">
-          Annual Technical Fest
+          Technical Fest
         </p>
         
         {/* Hosted By CSE Department */}
