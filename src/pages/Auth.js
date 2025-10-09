@@ -65,18 +65,7 @@ const Auth = () => {
         </div>
 
         {/* Footer Credits - Left Side */}
-        <footer className="absolute bottom-4 left-4 text-left">
-          <div className="bg-black/30 backdrop-blur-sm px-4 py-2 rounded-lg border border-white/10">
-            <p className="text-xs text-gray-400">
-              Designed & Created By -
-            </p>
-            <div className="flex flex-col mt-1 space-y-1">
-              <span className="text-xs text-gray-300">Dheerendra Kumar</span>
-              <span className="text-xs text-gray-300">Raj Singh</span>
-              <span className="text-xs text-gray-300">Shikhar Agarwal</span>
-            </div>
-          </div>
-        </footer>
+        
       </div>
     </>
   );
