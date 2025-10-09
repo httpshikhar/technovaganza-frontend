@@ -138,7 +138,7 @@ export const generateParticipationPDF = async (userData, registrations, events, 
   pdf.setFont('helvetica', 'normal');
   pdf.setTextColor(51, 51, 51);
   // UPDATED: Show event count with names in brackets
-  pdf.text(`${eventsCount} events \n (${eventNames.join(', ')})`, rightColumn + 25, currentY);
+  pdf.text(`${eventsCount} events \n (${eventNames.join('\n, ')})`, rightColumn + 25, currentY);
 
   // Amount display with highlighted styling
   currentY += 12;
