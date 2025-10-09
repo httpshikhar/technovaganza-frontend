@@ -18,6 +18,12 @@ export const generateParticipationPDF = async (userData, registrations, events, 
   const eventsCount = registrations.length;
   const amount = calculateAmount(eventsCount);
 
+  // Get event names for display
+  const eventNames = registrations.map(registration => {
+    const event = events.find(e => e._id === registration.eventId?._id || e._id === registration.eventId);
+    return event ? event.name : 'Unknown Event';
+  });
+
   // Add background color
   pdf.setFillColor(248, 249, 250);
   pdf.rect(0, 0, pageWidth, pageHeight, 'F');
@@ -131,7 +137,8 @@ export const generateParticipationPDF = async (userData, registrations, events, 
   pdf.text('Total Events:', rightColumn, currentY);
   pdf.setFont('helvetica', 'normal');
   pdf.setTextColor(51, 51, 51);
-  pdf.text(`${eventsCount} events`, rightColumn + 25, currentY);
+  // UPDATED: Show event count with names in brackets
+  pdf.text(`${eventsCount} events (${eventNames.join(', ')})`, rightColumn + 25, currentY);
 
   // Amount display with highlighted styling
   currentY += 12;
@@ -246,10 +253,12 @@ export const generateParticipationPDF = async (userData, registrations, events, 
     pdf.setFont('helvetica', 'normal');
     pdf.setTextColor(102, 102, 102);
     
+    // UPDATED: Include PID for solo events and Team ID for team events
     const details = [
       `Description: ${event.description || 'N/A'}`,
       `Type: ${eventType}`,
-      registration.teamId && `Team ID: ${registration.teamId}`,
+      // ADDED: Show PID for solo events, Team ID for team events
+      eventType.toLowerCase() === 'solo' ? `Participant ID: ${userData.pid}` : `Team ID: ${registration.teamId || 'N/A'}`,
       event.date && `Event Date: ${new Date(event.date).toLocaleDateString('en-IN')}`,
       event.time && `Event Time: ${event.time}`,
       event.venue && `Venue: ${event.venue}`,
